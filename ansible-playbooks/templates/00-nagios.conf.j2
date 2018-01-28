@@ -1,0 +1,35 @@
+<VirtualHost *:80>
+
+    ServerName nagios.c.eser1718-01.internal
+    ServerAlias localhost
+
+    DocumentRoot /usr/share/nagios3/htdocs
+
+    #Redirect permanent / https://nagios.c.eser1718-01.internal
+
+    ErrorLog ${APACHE_LOG_DIR}/nagios-error.log
+    CustomLog ${APACHE_LOG_DIR}/nagios-access.log combined
+</VirtualHost>
+
+<IfModule mod_ssl.c>
+
+<VirtualHost *:443>
+    ServerName nagios.c.eser1718-01.internal
+    ServerAdmin root@localhost
+
+    ErrorLog ${APACHE_LOG_DIR}/nagios-ssl-error.log
+    CustomLog ${APACHE_LOG_DIR}/nagios-ssl-access.log combined
+
+    DocumentRoot /usr/share/nagios3/htdocs
+
+    SSLEngine on
+    SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
+    SSLCertificateKeyFile   /etc/ssl/private/ssl-cert-snakeoil.key
+    BrowserMatch "MSIE [2-6]" \
+                nokeepalive ssl-unclean-shutdown \
+                downgrade-1.0 force-response-1.0
+    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+
+</VirtualHost>
+
+</IfModule>

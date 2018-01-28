@@ -1,0 +1,58 @@
+---
+- hosts: servers
+  vars_files:
+    - ansible-django-vars.yml
+  gather_facts: false
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: Clone/pull project repo
+      git: repo={{ project_repo }} dest={{ install_root }}/{{ project_name }} force=yes
+      notify:
+      - restart gunicorn
+
+    - name: deploy django settings
+      template: src=templates/settings.py.j2 dest={{ install_root }}/{{ project_name }}/es_project/settings.py
+      notify: restart gunicorn
+
+    - name: ensure apt cache is up to date
+      apt: update_cache=yes
+
+    - name: ensure pip3 is installed
+      apt: name=python3-pip
+
+    - name: install python packages
+      pip: requirements={{ install_root }}/{{ project_name }}/requirements.txt
+      notify:
+      - restart gunicorn
+
+    - name: copy nginx config
+      template: src=files/nginx.j2 dest=/etc/nginx/sites-enabled/{{ project_name }}.conf
+      notify:
+      - restart nginx
+
+#    - name: django migrate
+#      django_manage: command=migrate app_path={{ install_root }}/{{ project_name }} pythonpath={{ pythonpath }}
+
+#    - name: django collectstatic
+#      django_manage: command=collectstatic app_path={{ django_dir }}
+
+    - name: copy gunicorn config
+      template: src=files/gunicorn.j2 dest=/etc/init/gunicorn.conf
+      notify:
+      - restart gunicorn
+
+    - name: make sure nginx server is running
+      service: name=nginx state=started enabled=yes
+
+    - name: make sure gunicorn server is running
+      service: name=gunicorn state=started enabled=yes
+
+  handlers: 
+    - name: restart nginx
+      service: name=nginx state=restarted
+
+    - name: restart gunicorn
+      service: name=gunicorn state=restarted
+# vim:ft=ansible:

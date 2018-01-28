@@ -1,0 +1,23 @@
+server {
+        listen 80;
+        #listen 35.226.70.130;
+        #listen localhost;
+        #server_name django-hello.com www.django-hello.com 35.226.70.130 127.0.0.1 localhost;
+        #server_name 127.0.0.1 35.226.70.130;
+        #server_name 35.226.70.130;
+        #listen 127.0.0.1;
+        #server_name 127.0.0.1;
+        charset utf-8;
+
+
+	location /static {
+		alias {{ static_root }};
+	}
+
+	location / {
+		proxy_pass http://localhost:8000;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	}
+}

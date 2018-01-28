@@ -1,0 +1,29 @@
+- name: Configure a webserver instance
+  hosts: webs
+  become: yes
+  become_method: sudo
+    
+  tasks:
+    - name: install apps
+      apt: name={{ item }} update_cache=yes state=latest allow_unauthenticated=yes
+      with_items:
+        - nginx
+      register: conf
+    - debug:
+        var: conf
+
+    - name: write nginx.conf
+      template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
+      notify: restart nginx
+
+    - name: write /etc/nginx/sites-available/default
+      template: src=templates/default-site.j2 dest=/etc/nginx/sites-available/default
+      notify: restart nginx
+
+    - name: deploy website content
+      template: src=templates/index.html.j2 dest=/usr/share/nginx/html/index.html
+  
+  # The handler is common to the nginx installation steps
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted  

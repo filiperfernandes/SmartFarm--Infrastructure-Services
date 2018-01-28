@@ -1,0 +1,60 @@
+terraform init
+terraform plan
+terraform apply
+
+update IP's em /etc/hosts e ansible-inventory
+
+source ansible-load-credentials.sh
+
+gcloud compute ssh web1
+gcloud compute ssh web2
+gcloud compute ssh web3
+gcloud compute ssh lbal
+gcloud compute ssh dbserver
+gcloud compute ssh nagios
+
+ansible-playbook ansible-lbal-playbook.yml
+
+ansible-playbook ansible-db-playbook.yml
+
+ansible-playbook ansible-django-provision-playbook.yml
+
+ansible-playbook ansible-nagios-playbook.yml
+
+terraform destroy
+
+dbserver = 35.226.70.130
+lbal = 35.224.81.235
+nagios = 104.198.178.172
+web1 = 35.226.107.115
+web2 = 35.226.167.76
+web3 = 35.226.69.82
+
+TODO's/ Improvements:
+
+- Ansible deploy django app
+
+- Ansible deploy nagios clients
+
+- Improve django web app
+
+- Test, test, test
+
+- nagios:  htpasswd -c /etc/nagios3/htpasswd.users nagiosadmin
+
+
+ERRORS:
+
+nagios:  htpasswd -c /etc/nagios3/htpasswd.users nagiosadmin
+
+
+webs: runserver do django decentemente
+webs: migrations e collectstatic
+
+
+echo "export LANG=en_US.UTF-8" >> .bashrc
+echo "export LC_ALL=en_US.UTF-8" >> .bashrc
+
+on webs too
+
+
