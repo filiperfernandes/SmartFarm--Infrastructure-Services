@@ -1,0 +1,46 @@
+# Vagrant files
+
+.vagrant
+vagrant_ansible_inventory_*
+provisioning/host_vars/development
+packer*
+inventory
+www
+
+# Terraform files
+*.dll
+*.exe
+.DS_Store
+example.tf
+terraform.tfplan
+terraform.tfstate
+bin/
+modules-dev/
+/pkg/
+website/.vagrant
+website/.bundle
+website/build
+website/node_modules
+.vagrant/
+*.backup
+./*.tfstate
+.terraform/
+*.log
+*.bak
+*~
+.*.swp
+.idea
+*.iml
+*.test
+*.iml
+
+website/vendor
+
+# Test exclusions
+!command/test-fixtures/**/*.tfstate
+!command/test-fixtures/**/.terraform/
+
+#Credentials
+github_rsa
+terraform-credentials.json
+
